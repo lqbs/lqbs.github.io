@@ -1,33 +1,27 @@
 import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Tutorial",
-  description: "Tutorial",
+  lang: 'zh-CN',
+  title: '我的文档',
+  description: '基于 VitePress 和 Markdown 的文档站点',
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: '帖子', link: '/posts/ai-agent-tutorials' },
-      { text: '选模型', link: '/posts/ai-model-selection-for-programmers' },
-      { text: '项目流程', link: '/posts/internet-project-lifecycle' },
-      { text: '技术设计', link: '/posts/tech-design-for-internet-projects' }
+      { text: '首页', link: '/' },
+      { text: '写作指南', link: '/guide' },
+      { text: '原有文章', link: '/posts/ai-agent-tutorials' }
     ],
-
     sidebar: [
-      {
-        text: '帖子',
-        items: [
-          { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
-          { text: '程序员如何选 AI 模型', link: '/posts/ai-model-selection-for-programmers' },
-          { text: '互联网项目完整流程', link: '/posts/internet-project-lifecycle' },
-          { text: '技术设计全流程', link: '/posts/tech-design-for-internet-projects' }
-        ]
-      }
+      { text: '文档', items: [{ text: '开始写作', link: '/guide' }] },
+      { text: '原有文章', items: [
+        { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
+        { text: '程序员如何选 AI 模型', link: '/posts/ai-model-selection-for-programmers' },
+        { text: '互联网项目完整流程', link: '/posts/internet-project-lifecycle' },
+        { text: '技术设计全流程', link: '/posts/tech-design-for-internet-projects' }
+      ] }
     ],
-
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+    search: { provider: 'local' },
+    outline: { label: '本页目录' },
+    docFooter: { prev: '上一篇', next: '下一篇' },
+    returnToTopLabel: '返回顶部'
   }
 })
