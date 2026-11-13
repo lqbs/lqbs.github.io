@@ -8,10 +8,14 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '写作指南', link: '/guide' },
+      { text: '文档写作技巧', link: '/posts/document-writing-skills' },
       { text: '原有文章', link: '/posts/ai-agent-tutorials' }
     ],
     sidebar: [
       { text: '文档', items: [{ text: '开始写作', link: '/guide' }] },
+      { text: '写作方法', items: [
+        { text: '文档书写技巧', link: '/posts/document-writing-skills' }
+      ] },
       { text: '原有文章', items: [
         { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
         { text: '程序员如何选 AI 模型', link: '/posts/ai-model-selection-for-programmers' },
