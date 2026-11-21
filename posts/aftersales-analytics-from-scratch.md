@@ -3,6 +3,7 @@ title: 从零开发售后数据分析系统
 description: 以 Aftersales Analytics 为例，从售后需求和指标口径出发，完成数据建模、ETL、API、看板、质量治理和上线设计。
 date: 2026-11-21T00:00:00+08:00
 draft: false
+outline: [2, 3]
 tags: ["数据分析", "售后", "ETL", "FastAPI"]
 categories: ["项目实战"]
 ---
@@ -11,7 +12,92 @@ categories: ["项目实战"]
 
 一家生鲜电商发现售后处理变慢了。老板想知道问题有多严重，售后主管想知道慢在哪个环节。是某类问题处理更复杂，某个团队积压增加，还是订单在等待客户或物流反馈？要回答这些问题，得先定指标口径，再把指标落实到数据模型、同步任务、API 和看板上。系统上线后，还要能判断数据是否可信，遇到故障时能恢复。
 
-这次学习以 **Aftersales Analytics 售后数据分析系统**为贯穿案例。起点是已有后端和数据处理经验，希望独立开发一套完整系统。最初拟了十课大纲，实际学习从售后业务需求逐步推进到生产运维，第九课转入项目初始化。以下按实际学习顺序展开，对话中的订单、指标数字和发布故障均为教学案例。
+这次学习以 **Aftersales Analytics 售后数据分析系统**为贯穿案例。起点是已有后端和数据处理经验，希望独立开发一套完整系统。最初拟了十课大纲，实际学习从售后业务需求逐步推进到生产运维，第九课转入项目初始化。对话中的订单、指标数字和发布故障均为教学案例。
+
+## 完整目录
+
+九章按对话顺序编排，共 43 轮。练习保留原提问、作答和讲评，SQL、Python、前端和部署示例保留为代码块。第九章末尾的迭代题尚未作答。
+
+### 关键材料
+
+- [售后数据分析系统 PRD V1.0](/posts/aftersales-analytics/02-requirements-and-prd#prd-v1-0)
+- [数据库设计评审](/posts/aftersales-analytics/03-data-modeling#database-design-review)
+- [生产上线验收](/posts/aftersales-analytics/08-deployment#production-acceptance)
+- [V1 首轮迭代题](/posts/aftersales-analytics/09-project#first-iteration-exercise)
+
+### [第一章　认识数据分析系统](/posts/aftersales-analytics/01-overview)
+
+- [第 1 轮　学习目标与课程路线](/posts/aftersales-analytics/01-overview#turn-1)
+- [第 2 轮　系统组成、核心能力与案例范围](/posts/aftersales-analytics/01-overview#turn-2)
+
+### [第二章　业务需求、指标与 PRD](/posts/aftersales-analytics/02-requirements-and-prd)
+
+- [第 3 轮　从售后业务场景启动需求分析](/posts/aftersales-analytics/02-requirements-and-prd#turn-3)
+- [第 4 轮　确定业务目标与识别用户角色](/posts/aftersales-analytics/02-requirements-and-prd#turn-4)
+- [第 5 轮　区分使用者与决策者，拆解问题](/posts/aftersales-analytics/02-requirements-and-prd#turn-5)
+- [第 6 轮　按售后类型和物流维度缩小范围](/posts/aftersales-analytics/02-requirements-and-prd#turn-6)
+- [第 7 轮　回查订单明细并分析处理节点](/posts/aftersales-analytics/02-requirements-and-prd#turn-7)
+- [第 8 轮　用多维分析和对照数据验证根因](/posts/aftersales-analytics/02-requirements-and-prd#turn-8)
+- [第 9 轮　用公平对比制定改善动作](/posts/aftersales-analytics/02-requirements-and-prd#turn-9)
+- [第 10 轮　首次响应、解决时长和 SLA 超时率](/posts/aftersales-analytics/02-requirements-and-prd#turn-10)
+- [第 11 轮　区分客服处理、外部等待和端到端时长](/posts/aftersales-analytics/02-requirements-and-prd#turn-11)
+- [第 12 轮　经营总览和页面布局](/posts/aftersales-analytics/02-requirements-and-prd#turn-12)
+- [第 13 轮　首页 KPI、指标字典和初步数据模型](/posts/aftersales-analytics/02-requirements-and-prd#turn-13)
+- [第 14 轮　创建日期与解决日期的统计口径](/posts/aftersales-analytics/02-requirements-and-prd#turn-14)
+- [第 15 轮　SLA、数据更新与正式 PRD](/posts/aftersales-analytics/02-requirements-and-prd#turn-15)
+
+### [第三章　数据架构与 MySQL 建模](/posts/aftersales-analytics/03-data-modeling)
+
+- [第 16 轮　ODS、DWD、DWS 与 ADS 分层](/posts/aftersales-analytics/03-data-modeling#turn-16)
+- [第 17 轮　用 MySQL 搭建最小架构并定义数据粒度](/posts/aftersales-analytics/03-data-modeling#turn-17)
+- [第 18 轮　识别 JOIN 扇出，设计订单和事件事实表](/posts/aftersales-analytics/03-data-modeling#turn-18)
+- [第 19 轮　SCD2、ER 图与建表 SQL](/posts/aftersales-analytics/03-data-modeling#turn-19)
+- [第 20 轮　客服转交、分配历史与团队工作量](/posts/aftersales-analytics/03-data-modeling#turn-20)
+- [第 21 轮　团队日汇总 SQL、质量检查与数据库设计文档](/posts/aftersales-analytics/03-data-modeling#turn-21)
+- [第 22 轮　数据库设计评审与开发验收](/posts/aftersales-analytics/03-data-modeling#turn-22)
+
+### [第四章　ETL 增量同步与补数](/posts/aftersales-analytics/04-etl)
+
+- [第 23 轮　增量抽取、复合游标和幂等写入](/posts/aftersales-analytics/04-etl#turn-23)
+- [第 24 轮　失败重试、事务和 Celery 定时调度](/posts/aftersales-analytics/04-etl#turn-24)
+- [第 25 轮　事务测试、历史补偿、日志与告警](/posts/aftersales-analytics/04-etl#turn-25)
+- [第 26 轮　迟到更新、数据一致性与 ETL 验收](/posts/aftersales-analytics/04-etl#turn-26)
+
+### [第五章　FastAPI 接口与权限](/posts/aftersales-analytics/05-fastapi)
+
+- [第 27 轮　接口契约、参数校验和汇总查询](/posts/aftersales-analytics/05-fastapi#turn-27)
+- [第 28 轮　JWT、RBAC 和团队数据权限](/posts/aftersales-analytics/05-fastapi#turn-28)
+- [第 29 轮　Service 与 Repository 分层、权限缓存和慢查询](/posts/aftersales-analytics/05-fastapi#turn-29)
+- [第 30 轮　接口评审、自动化测试和开发验收](/posts/aftersales-analytics/05-fastapi#turn-30)
+
+### [第六章　React 与 ECharts 看板](/posts/aftersales-analytics/06-dashboard)
+
+- [第 31 轮　总览布局、React 初始化与 ECharts 图表](/posts/aftersales-analytics/06-dashboard#turn-31)
+- [第 32 轮　异步请求、页面状态和日期筛选](/posts/aftersales-analytics/06-dashboard#turn-32)
+- [第 33 轮　请求竞态、图表下钻和自动化测试](/posts/aftersales-analytics/06-dashboard#turn-33)
+- [第 34 轮　看板评审、前后端联调与项目验收](/posts/aftersales-analytics/06-dashboard#turn-34)
+
+### [第七章　数据验证与质量治理](/posts/aftersales-analytics/07-data-quality)
+
+- [第 35 轮　数据完整性、指标复算和质量规则](/posts/aftersales-analytics/07-data-quality#turn-35)
+- [第 36 轮　定位缺失订单与自动化质量检查](/posts/aftersales-analytics/07-data-quality#turn-36)
+- [第 37 轮　隔离异常数据、控制指标发布和处理告警](/posts/aftersales-analytics/07-data-quality#turn-37)
+- [第 38 轮　指标版本管理、质量监控看板与项目验收](/posts/aftersales-analytics/07-data-quality#turn-38)
+
+### [第八章　部署、上线与运维](/posts/aftersales-analytics/08-deployment)
+
+- [第 39 轮　Docker Compose 部署和数据卷持久化](/posts/aftersales-analytics/08-deployment#turn-39)
+- [第 40 轮　Nginx 反向代理、HTTPS 与前端部署](/posts/aftersales-analytics/08-deployment#turn-40)
+- [第 41 轮　GitHub Actions CI/CD、自动部署与回滚](/posts/aftersales-analytics/08-deployment#turn-41)
+- [第 42 轮　生产上线验收、监控与运维手册](/posts/aftersales-analytics/08-deployment#turn-42)
+
+### [第九章　Aftersales Analytics V1 项目实战](/posts/aftersales-analytics/09-project)
+
+- [第 43 轮　项目目标、目录、初始化步骤和首轮迭代题](/posts/aftersales-analytics/09-project#turn-43)
+
+## 课程速览
+
+以下概览保留各章的主要设计取舍。
 
 ## 第一课　认识数据分析系统
 
