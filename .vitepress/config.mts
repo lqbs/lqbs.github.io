@@ -10,6 +10,7 @@ export default defineConfig({
       { text: '写作指南', link: '/guide' },
       { text: '文档写作技巧', link: '/posts/document-writing-skills' },
       { text: '售后数据分析系统', link: '/posts/aftersales-analytics-from-scratch' },
+      { text: '软件开发流程', link: '/posts/software-development-workflow' },
       { text: '原有文章', link: '/posts/ai-agent-tutorials' }
     ],
     sidebar: [
@@ -18,7 +19,8 @@ export default defineConfig({
         { text: '文档书写技巧', link: '/posts/document-writing-skills' }
       ] },
       { text: '项目实战', items: [
-        { text: '从零开发售后数据分析系统', link: '/posts/aftersales-analytics-from-scratch' }
+        { text: '从零开发售后数据分析系统', link: '/posts/aftersales-analytics-from-scratch' },
+        { text: '软件开发流程与订单系统实战', link: '/posts/software-development-workflow' }
       ] },
       { text: '原有文章', items: [
         { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
