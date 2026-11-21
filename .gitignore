@@ -1,3 +1,8 @@
-node_modules/
+node_modules
 .DS_Store
-.vitepress/
+.vitepress/cache/
+.vitepress/dist/
+
+# 八股文 PDF 原始文件与提取/整理的中间产物
+data/
+.pdf-tools/
