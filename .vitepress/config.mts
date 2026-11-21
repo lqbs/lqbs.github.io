@@ -9,12 +9,16 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '写作指南', link: '/guide' },
       { text: '文档写作技巧', link: '/posts/document-writing-skills' },
+      { text: '售后数据分析系统', link: '/posts/aftersales-analytics-from-scratch' },
       { text: '原有文章', link: '/posts/ai-agent-tutorials' }
     ],
     sidebar: [
       { text: '文档', items: [{ text: '开始写作', link: '/guide' }] },
       { text: '写作方法', items: [
         { text: '文档书写技巧', link: '/posts/document-writing-skills' }
+      ] },
+      { text: '项目实战', items: [
+        { text: '从零开发售后数据分析系统', link: '/posts/aftersales-analytics-from-scratch' }
       ] },
       { text: '原有文章', items: [
         { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
