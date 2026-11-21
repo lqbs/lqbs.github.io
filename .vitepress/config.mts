@@ -1,27 +1,31 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { defineConfig, type DefaultTheme } from 'vitepress'
 
+function readCourseChapters(base: string): DefaultTheme.SidebarItem[] {
+  const directory = new URL(`..${base}`, import.meta.url)
+  return readdirSync(directory)
+    .filter((file) => /^\d{2}-[^/]+\.md$/.test(file))
+    .sort()
+    .map((file) => {
+      const chapter = readFileSync(new URL(file, directory), 'utf8')
+      const text = chapter.match(/^# ([^\r\n]+)\r?$/m)?.[1]
+      const link = base + file.slice(0, -3)
+      const items = Array.from(
+        chapter.matchAll(/^## ([^\r\n]+) \{#(turn-\d+)\}\r?$/gm),
+        ([, title, anchor]) => ({ text: title, link: `${link}#${anchor}` })
+      )
+
+      if (!text || items.length === 0) {
+        throw new Error(`课程章节缺少标题或对话小节：${link}`)
+      }
+
+      return { text, link, collapsed: true, items }
+    })
+}
+
 const aftersalesIndex = '/posts/aftersales-analytics-from-scratch'
 const aftersalesBase = '/posts/aftersales-analytics/'
-const chapterDirectory = new URL(`..${aftersalesBase}`, import.meta.url)
-const aftersalesChapters: DefaultTheme.SidebarItem[] = readdirSync(chapterDirectory)
-  .filter((file) => /^\d{2}-[^/]+\.md$/.test(file))
-  .sort()
-  .map((file) => {
-    const chapter = readFileSync(new URL(file, chapterDirectory), 'utf8')
-    const text = chapter.match(/^# ([^\r\n]+)\r?$/m)?.[1]
-    const link = aftersalesBase + file.slice(0, -3)
-    const items = Array.from(
-      chapter.matchAll(/^## (第 \d+ 轮　[^\r\n]+) \{#(turn-\d+)\}\r?$/gm),
-      ([, title, anchor]) => ({ text: title, link: `${link}#${anchor}` })
-    )
-
-    if (!text || items.length === 0) {
-      throw new Error(`售后课程章节缺少标题或对话小节：${file}`)
-    }
-
-    return { text, link, collapsed: true, items }
-  })
+const aftersalesChapters = readCourseChapters(aftersalesBase)
 
 const aftersalesSidebar: DefaultTheme.SidebarItem[] = [
   {
@@ -39,6 +43,19 @@ const aftersalesSidebar: DefaultTheme.SidebarItem[] = [
   }
 ]
 
+const softwareDevelopmentIndex = '/posts/software-development-workflow'
+const softwareDevelopmentBase = softwareDevelopmentIndex + '/'
+const softwareDevelopmentChapters = readCourseChapters(softwareDevelopmentBase)
+const softwareDevelopmentSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '完整目录',
+    items: [{ text: '课程导读', link: softwareDevelopmentIndex }]
+  },
+  { text: '软件开发六课', items: softwareDevelopmentChapters.slice(0, 6) },
+  { text: '综合项目与八轮需求调研', items: softwareDevelopmentChapters.slice(6, 15) },
+  { text: '系统架构设计', items: softwareDevelopmentChapters.slice(15) }
+]
+
 export default defineConfig({
   lang: 'zh-CN',
   title: '我的文档',
@@ -49,12 +66,14 @@ export default defineConfig({
       { text: '写作指南', link: '/guide' },
       { text: '文档写作技巧', link: '/posts/document-writing-skills' },
       { text: '售后数据分析系统', link: aftersalesIndex },
-      { text: '软件开发流程', link: '/posts/software-development-workflow' },
+      { text: '软件开发流程', link: softwareDevelopmentIndex },
       { text: '原有文章', link: '/posts/ai-agent-tutorials' }
     ],
     sidebar: {
       [aftersalesIndex]: aftersalesSidebar,
       [aftersalesBase]: aftersalesSidebar,
+      [softwareDevelopmentIndex]: softwareDevelopmentSidebar,
+      [softwareDevelopmentBase]: softwareDevelopmentSidebar,
       '/': [
         { text: '文档', items: [{ text: '开始写作', link: '/guide' }] },
         { text: '写作方法', items: [
@@ -62,7 +81,7 @@ export default defineConfig({
         ] },
         { text: '项目实战', items: [
           { text: '从零开发售后数据分析系统', link: aftersalesIndex },
-          { text: '软件开发流程与订单系统实战', link: '/posts/software-development-workflow' }
+          { text: '软件开发流程与订单系统实战', link: softwareDevelopmentIndex }
         ] },
         { text: '原有文章', items: [
           { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },

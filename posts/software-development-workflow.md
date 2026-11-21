@@ -19,34 +19,7 @@ next:
 
 ## 完整目录
 
-### 软件开发六课
-
-| 章节 | 对话 |
-| --- | --- |
-| [第一课　需求分析](./software-development-workflow/01-requirements) | 01–06 |
-| [第二课　系统设计](./software-development-workflow/02-system-design) | 07–14 |
-| [第三课　编码实现](./software-development-workflow/03-implementation) | 15–21 |
-| [第四课　测试验证](./software-development-workflow/04-testing) | 22–27 |
-| [第五课　上线部署与运维](./software-development-workflow/05-deployment) | 28–34 |
-| [第六课　软件运营与持续迭代](./software-development-workflow/06-operations) | 35–42 |
-
-### 综合项目与八轮需求调研
-
-| 章节 | 对话 |
-| --- | --- |
-| [项目启动与调研准备](./software-development-workflow/07-project-kickoff) | 43 |
-| [第 1 轮　订单来源与数据接入](./software-development-workflow/08-order-sources) | 44 |
-| [第 2 轮　订单创建与校验](./software-development-workflow/09-order-validation) | 45 |
-| [第 3 轮　金额、优惠、退款与修正](./software-development-workflow/10-order-amounts) | 46 |
-| [第 4 轮　订单审核与库存预留](./software-development-workflow/11-inventory-reservation) | 47 |
-| [第 5 轮　仓库履约与发货](./software-development-workflow/12-warehouse-fulfillment) | 48 |
-| [第 6 轮　取消、地址修改与异常处理](./software-development-workflow/13-order-exceptions) | 49 |
-| [第 7 轮　运营指标、报表与权限](./software-development-workflow/14-metrics-permissions) | 50 |
-| [第 8 轮　MVP、需求追踪矩阵与 PRD](./software-development-workflow/15-mvp-prd) | 51 |
-
-### 系统架构设计
-
-[对话 52　模块化单体与总体架构](./software-development-workflow/16-architecture#turn-52)
+在左侧目录选择章节，点击章节右侧的箭头可展开对话。手机端可点击页面上方的「目录」。
 
 原文以链接和图注引用配图。完整版保留图注，正文中的文本流程和代码照原文收录。
 
