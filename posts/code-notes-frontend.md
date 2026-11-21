@@ -13,7 +13,7 @@ categories: ["面试八股"]
 《代码随想录知识星球精华（最强八股文）第五版》共九册，本篇整理自其中的前端篇，覆盖 HTML、CSS、JavaScript、Ajax/Fetch/Axios、浏览器与网络、性能优化与安全，以及 Vue 和 React 两大框架。
 原文以面试问答为主，整理时按主题重排为章节，逐题给出答案要点，对比类考点整理成表。原书中 Webpack 与 Node 两章仅有标题无正文、部分小节为外部链接形式，已如实标注或按通用知识补齐；内容为个人学习笔记，仅供学习参考。
 
-## 完整目录 {#toc}
+::: details 完整目录（点击展开）
 
 - [HTML](#html)
   - [DOCTYPE 的作用](#html-doctype)
@@ -94,6 +94,8 @@ categories: ["面试八股"]
   - [React 性能优化](#react-perf)
   - [Fiber](#react-fiber)
   - [dangerouslySetInnerHTML](#react-dangerouslysetinnerhtml)
+
+:::
 
 ## HTML {#html}
 

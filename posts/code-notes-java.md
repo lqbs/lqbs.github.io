@@ -13,7 +13,7 @@ categories: ["面试八股"]
 《代码随想录知识星球精华（最强八股文）第五版》共九册，本篇整理自其中的 Java 篇，从 Java 基础、集合、IO 一路推进到多线程、JVM、Spring 生态、MyBatis 和各类中间件，最后是编译执行与并发进阶的深水区。
 原文以面试问答为主，整理时按主题重排为章节，逐题给出答案要点，对比类考点整理成表。原书中仅有外部链接或图片、无正文的小节，已按通用知识补齐并注明；内容为个人学习笔记，仅供学习参考。
 
-## 完整目录 {#toc}
+::: details 完整目录（点击展开）
 
 - [Java 基础](#javase)
   - [Java 概述](#javase-overview)
@@ -129,6 +129,8 @@ categories: ["面试八股"]
   - [AQS](#concurrent-aqs)
   - [ThreadLocal](#concurrent-threadlocal)
   - [附：思维导图索引](#mindmaps)
+
+:::
 
 ## Java 基础 {#javase}
 

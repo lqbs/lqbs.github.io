@@ -1,0 +1,240 @@
+/* ==========================================================================
+   设计令牌：主色、字体、布局宽度
+   ========================================================================== */
+
+:root {
+  --vp-c-brand-1: #1d7466;
+  --vp-c-brand-2: #24887a;
+  --vp-c-brand-3: #2a9a89;
+  --vp-c-brand-soft: rgba(36, 136, 122, 0.14);
+
+  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-active-bg: var(--vp-c-brand-2);
+
+  --vp-home-hero-name-color: var(--vp-c-brand-1);
+
+  --vp-layout-max-width: 1600px;
+
+  --reading-line-height: 1.85;
+  --chat-ask-bg: #f2f7f6;
+}
+
+.dark {
+  --vp-c-brand-1: #5ec2b0;
+  --vp-c-brand-2: #47aa99;
+  --vp-c-brand-3: #2f8d7e;
+  --vp-c-brand-soft: rgba(94, 194, 176, 0.16);
+
+  --vp-button-brand-bg: #2a7f71;
+  --vp-button-brand-hover-bg: #31907f;
+  --vp-button-brand-active-bg: #31907f;
+
+  --chat-ask-bg: #1e2725;
+}
+
+/* 中文字体：系统字体优先，不额外加载网络字体。html[lang] 的优先级高于默认主题的 [lang]:where(...) */
+html[lang] {
+  --vp-font-family-base: 'Inter4CJK', 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'HarmonyOS Sans SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC',
+    'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Noto Color Emoji';
+}
+
+/* 大屏放宽正文：默认 688px 对表格和长段落偏窄 */
+@media (min-width: 1440px) {
+  .VPDoc.has-aside .content-container {
+    max-width: 780px !important;
+  }
+}
+
+/* ==========================================================================
+   正文排版
+   ========================================================================== */
+
+.vp-doc {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.vp-doc p,
+.vp-doc li {
+  line-height: var(--reading-line-height);
+}
+
+.vp-doc p {
+  margin: 14px 0;
+}
+
+.vp-doc li + li {
+  margin-top: 6px;
+}
+
+/* 中文标题不使用负字距 */
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3,
+.vp-doc h4 {
+  letter-spacing: 0;
+}
+
+.vp-doc h1 {
+  font-size: 30px;
+  line-height: 1.4;
+}
+
+.vp-doc h2 {
+  margin-top: 56px;
+  font-size: 24px;
+  line-height: 1.45;
+}
+
+.vp-doc h3 {
+  margin-top: 40px;
+  padding-left: 12px;
+  border-left: 3px solid var(--vp-c-brand-1);
+  font-size: 19px;
+  line-height: 1.5;
+}
+
+.vp-doc h4 {
+  margin-top: 28px;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.vp-doc h1 + .article-meta + h2,
+.vp-doc h1 + .article-meta + * > h2:first-child {
+  margin-top: 32px;
+}
+
+.vp-doc strong {
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc :not(pre, h1, h2, h3, h4, h5, h6) > code {
+  font-size: 0.88em;
+}
+
+.vp-doc a {
+  text-underline-offset: 3px;
+}
+
+.vp-doc blockquote {
+  margin: 18px 0;
+  border-left: 3px solid var(--vp-c-divider);
+  border-radius: 0 8px 8px 0;
+  background: var(--vp-c-bg-soft);
+  padding: 4px 18px;
+}
+
+.vp-doc blockquote > p {
+  margin: 10px 0;
+}
+
+/* 表格：更紧凑的字号，表头不折行，避免中文列被挤成一字一行 */
+.vp-doc table {
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+.vp-doc th {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.vp-doc td {
+  vertical-align: top;
+}
+
+.vp-doc tr:hover td {
+  background: var(--vp-c-brand-soft);
+}
+
+/* 折叠块（如八股文的完整目录） */
+.vp-doc .custom-block.details {
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc .custom-block.details summary {
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   课程章节：对话轮次
+   ========================================================================== */
+
+.vp-doc .chat-label {
+  margin: 20px 0 8px;
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0.04em;
+}
+
+.vp-doc .chat-label strong {
+  font-weight: 600;
+  color: inherit;
+}
+
+.vp-doc .chat-label--ask {
+  color: var(--vp-c-brand-1);
+}
+
+.vp-doc .chat-label--answer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--vp-c-text-3);
+}
+
+.vp-doc .chat-label--answer::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--vp-c-divider);
+}
+
+.vp-doc .chat-ask,
+.vp-doc blockquote.chat-ask {
+  margin: 16px 0 24px;
+  border: 1px solid var(--vp-c-divider);
+  border-left: 3px solid var(--vp-c-brand-1);
+  border-radius: 4px 12px 12px 4px;
+  background: var(--chat-ask-bg);
+  padding: 2px 18px 6px;
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc .chat-ask > .chat-label--ask:first-child {
+  margin-top: 12px;
+}
+
+.vp-doc blockquote.chat-ask > p {
+  color: var(--vp-c-text-1);
+}
+
+/* ==========================================================================
+   首页
+   ========================================================================== */
+
+.VPHome .VPHero .tagline {
+  max-width: 560px;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+@media (max-width: 639px) {
+  .vp-doc h1 {
+    font-size: 26px;
+  }
+
+  .vp-doc h2 {
+    margin-top: 44px;
+    font-size: 21px;
+  }
+
+  .vp-doc h3 {
+    font-size: 18px;
+  }
+}

@@ -5,6 +5,7 @@ date: 2026-11-21T00:00:00+08:00
 draft: false
 outline: [2, 3]
 tags: ["数据分析", "售后", "ETL", "FastAPI"]
+chapterDir: aftersales-analytics
 categories: ["项目实战"]
 ---
 

@@ -1,5 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { defineConfig, type DefaultTheme } from 'vitepress'
+import { articleMeta, chatTurns } from './markdownPlugins'
+import { countReading, formatDate } from './theme/readingStats'
 
 function readCourseChapters(base: string): DefaultTheme.SidebarItem[] {
   const directory = new URL(`..${base}`, import.meta.url)
@@ -56,28 +59,71 @@ const softwareDevelopmentSidebar: DefaultTheme.SidebarItem[] = [
   { text: '系统架构设计', items: softwareDevelopmentChapters.slice(15) }
 ]
 
+const projectLinks: DefaultTheme.SidebarItem[] = [
+  { text: '从零开发售后数据分析系统', link: aftersalesIndex },
+  { text: '软件开发流程与订单系统实战', link: softwareDevelopmentIndex }
+]
+
+const notesLinks: DefaultTheme.SidebarItem[] = [
+  { text: '计算机基础篇', link: '/posts/code-notes-computer-fundamentals' },
+  { text: 'Java 篇', link: '/posts/code-notes-java' },
+  { text: '前端篇', link: '/posts/code-notes-frontend' },
+  { text: '算法篇', link: '/posts/code-notes-algorithm' },
+  { text: '面经篇', link: '/posts/code-notes-interview' }
+]
+
+const articleGroups: DefaultTheme.SidebarItem[] = [
+  {
+    text: '写作与项目管理',
+    items: [
+      { text: '文档书写技巧', link: '/posts/document-writing-skills' },
+      { text: '互联网项目完整流程', link: '/posts/internet-project-lifecycle' },
+      { text: '技术设计全流程', link: '/posts/tech-design-for-internet-projects' }
+    ]
+  },
+  {
+    text: 'AI',
+    items: [
+      { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
+      { text: '程序员如何选 AI 模型', link: '/posts/ai-model-selection-for-programmers' }
+    ]
+  }
+]
+
+type NavLink = DefaultTheme.NavItemWithLink
+const toNav = (items: DefaultTheme.SidebarItem[]) => items as NavLink[]
+
 export default defineConfig({
   lang: 'zh-CN',
   title: '我的文档',
-  description: '基于 VitePress 和 Markdown 的文档站点',
+  description: '项目实战课程、面试八股笔记与方法论长文',
+  markdown: {
+    config(md) {
+      md.use(chatTurns)
+      md.use(articleMeta)
+    }
+  },
+  transformPageData(pageData, { siteConfig }) {
+    if (!pageData.relativePath.endsWith('.md') || pageData.frontmatter.layout === 'home') return
+    try {
+      const source = readFileSync(join(siteConfig.srcDir, pageData.relativePath), 'utf8')
+      return {
+        readingStats: { ...countReading(source), date: formatDate(pageData.frontmatter.date) }
+      } as Partial<typeof pageData>
+    } catch {
+      return
+    }
+  },
   themeConfig: {
     nav: [
       { text: '首页', link: '/' },
-      { text: '写作指南', link: '/guide' },
-      { text: '文档写作技巧', link: '/posts/document-writing-skills' },
-      { text: '售后数据分析系统', link: aftersalesIndex },
-      { text: '软件开发流程', link: softwareDevelopmentIndex },
+      { text: '项目实战', items: toNav(projectLinks) },
+      { text: '八股文笔记', items: toNav(notesLinks) },
       {
-        text: '八股文笔记',
-        items: [
-          { text: '计算机基础篇', link: '/posts/code-notes-computer-fundamentals' },
-          { text: 'Java 篇', link: '/posts/code-notes-java' },
-          { text: '前端篇', link: '/posts/code-notes-frontend' },
-          { text: '算法篇', link: '/posts/code-notes-algorithm' },
-          { text: '面经篇', link: '/posts/code-notes-interview' }
-        ]
+        text: '文章',
+        items: articleGroups.map((group) => ({ text: group.text!, items: toNav(group.items!) }))
       },
-      { text: '原有文章', link: '/posts/ai-agent-tutorials' }
+      { text: '归档', link: '/archive' }
     ],
     sidebar: {
       [aftersalesIndex]: aftersalesSidebar,
@@ -85,33 +131,35 @@ export default defineConfig({
       [softwareDevelopmentIndex]: softwareDevelopmentSidebar,
       [softwareDevelopmentBase]: softwareDevelopmentSidebar,
       '/': [
-        { text: '文档', items: [{ text: '开始写作', link: '/guide' }] },
-        { text: '写作方法', items: [
-          { text: '文档书写技巧', link: '/posts/document-writing-skills' }
-        ] },
-        { text: '项目实战', items: [
-          { text: '从零开发售后数据分析系统', link: aftersalesIndex },
-          { text: '软件开发流程与订单系统实战', link: softwareDevelopmentIndex }
-        ] },
-        { text: '八股文笔记', items: [
-          { text: '计算机基础篇', link: '/posts/code-notes-computer-fundamentals' },
-          { text: 'Java 篇', link: '/posts/code-notes-java' },
-          { text: '前端篇', link: '/posts/code-notes-frontend' },
-          { text: '算法篇', link: '/posts/code-notes-algorithm' },
-          { text: '面经篇', link: '/posts/code-notes-interview' }
-        ] },
-        { text: '原有文章', items: [
-          { text: 'AI Agent 26 项目教程', link: '/posts/ai-agent-tutorials' },
-          { text: '程序员如何选 AI 模型', link: '/posts/ai-model-selection-for-programmers' },
-          { text: '互联网项目完整流程', link: '/posts/internet-project-lifecycle' },
-          { text: '技术设计全流程', link: '/posts/tech-design-for-internet-projects' }
-        ] }
+        { text: '项目实战', items: projectLinks },
+        { text: '八股文笔记', items: notesLinks },
+        ...articleGroups
       ]
     },
+    footer: {
+      message: '<a href="/guide">写作与发布指南</a> · <a href="/archive">文章归档</a>'
+    },
     sidebarMenuLabel: '目录',
-    search: { provider: 'local' },
-    outline: { label: '本页目录' },
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: { buttonText: '搜索', buttonAriaLabel: '搜索' },
+          modal: {
+            displayDetails: '显示详细列表',
+            resetButtonTitle: '清除查询',
+            backButtonTitle: '关闭搜索',
+            noResultsText: '没有找到相关结果',
+            footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
+          }
+        }
+      }
+    },
+    outline: { label: '本页目录', level: [2, 3] },
     docFooter: { prev: '上一篇', next: '下一篇' },
-    returnToTopLabel: '返回顶部'
+    returnToTopLabel: '返回顶部',
+    darkModeSwitchLabel: '外观',
+    lightModeSwitchTitle: '切换到浅色模式',
+    darkModeSwitchTitle: '切换到深色模式'
   }
 })
