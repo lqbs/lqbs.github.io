@@ -215,6 +215,105 @@ html[lang] {
 }
 
 /* ==========================================================================
+   左侧边栏
+   ========================================================================== */
+
+@media (min-width: 1440px) {
+  :root {
+    --vp-sidebar-width: 296px;
+  }
+}
+
+/* 分组标题：小号、灰色、加字距，与条目拉开层次 */
+.VPSidebarItem.level-0:not(.is-link) > .item > .text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  /* 默认主题对含当前项的分组（.has-active）有更高优先级的深色样式 */
+  color: var(--vp-c-text-3) !important;
+}
+
+/* 一、二级条目：当前项用浅底 + 左侧主色竖条 */
+.VPSidebarItem.level-0.is-link > .item,
+.VPSidebarItem.level-1.is-link > .item {
+  margin: 0 -10px;
+  padding: 0 10px;
+  width: calc(100% + 20px);
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.VPSidebarItem.level-0.is-link.is-active > .item,
+.VPSidebarItem.level-1.is-link.is-active > .item {
+  background: var(--vp-c-brand-soft);
+  box-shadow: inset 3px 0 0 var(--vp-c-brand-1);
+}
+
+.VPSidebarItem.level-0.is-link > .item:hover,
+.VPSidebarItem.level-1.is-link > .item:hover {
+  background: var(--vp-c-default-soft);
+}
+
+.VPSidebarItem.level-0.is-link.is-active > .item:hover,
+.VPSidebarItem.level-1.is-link.is-active > .item:hover {
+  background: var(--vp-c-brand-soft);
+}
+
+/* 课程章节：编号与标题分两行 */
+.VPSidebarItem .sb-no {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--vp-c-text-3);
+}
+
+.VPSidebarItem .sb-sep {
+  display: none;
+}
+
+.VPSidebarItem .sb-no + .sb-sep + .sb-title {
+  display: block;
+}
+
+.VPSidebarItem.is-active > .item .sb-no {
+  color: var(--vp-c-brand-1);
+}
+
+/* 对话轮次：数字徽标 + 最多两行标题 */
+.VPSidebarItem .sb-turn {
+  display: inline-block;
+  min-width: 24px;
+  margin-right: 6px;
+  border-radius: 4px;
+  background: var(--vp-c-default-soft);
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--vp-c-text-2);
+  vertical-align: 1px;
+}
+
+.VPSidebarItem.is-active > .item .sb-turn {
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+.VPSidebarItem.level-2 > .item .text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 5px 0;
+  padding: 0;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+/* ==========================================================================
    首页
    ========================================================================== */
 

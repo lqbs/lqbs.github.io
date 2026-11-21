@@ -4,6 +4,21 @@ import { defineConfig, type DefaultTheme } from 'vitepress'
 import { articleMeta, chatTurns } from './markdownPlugins'
 import { countReading, formatDate } from './theme/readingStats'
 
+/** 课程标题“第三章　数据架构……”拆成编号和标题两段，侧边栏分两行显示；隐藏的全角空格保证在翻页链接里仍连读 */
+function splitTitle(title: string): string {
+  const [no, ...rest] = title.split('　')
+  if (!rest.length) return title
+  return `<span class="sb-no">${no}</span><span class="sb-sep">　</span><span class="sb-title">${rest.join('　')}</span>`
+}
+
+/** 对话轮次“第 16 轮　……”/“对话 43　……”渲染为数字徽标 + 标题 */
+function turnTitle(title: string): string {
+  const match = title.match(/^(?:第\s*(\d+)\s*轮|对话\s*(\d+))\s*(.*)$/)
+  if (!match) return title
+  const [, a, b, rest] = match
+  return `<span class="sb-turn">${a ?? b}</span><span class="sb-title">${rest}</span>`
+}
+
 function readCourseChapters(base: string): DefaultTheme.SidebarItem[] {
   const directory = new URL(`..${base}`, import.meta.url)
   return readdirSync(directory)
@@ -15,26 +30,32 @@ function readCourseChapters(base: string): DefaultTheme.SidebarItem[] {
       const link = base + file.slice(0, -3)
       const items = Array.from(
         chapter.matchAll(/^## ([^\r\n]+) \{#(turn-\d+)\}\r?$/gm),
-        ([, title, anchor]) => ({ text: title, link: `${link}#${anchor}` })
+        ([, title, anchor]) => ({ text: turnTitle(title), link: `${link}#${anchor}` })
       )
 
       if (!text || items.length === 0) {
         throw new Error(`课程章节缺少标题或对话小节：${link}`)
       }
 
-      return { text, link, collapsed: true, items }
+      return { text: splitTitle(text), link, collapsed: true, items }
     })
 }
 
+/** 八股文：每篇的二级标题（## 标题 {#id}）作为侧边栏子项 */
+function readSections(link: string): DefaultTheme.SidebarItem[] {
+  const source = readFileSync(new URL(`..${link}.md`, import.meta.url), 'utf8')
+  return Array.from(source.matchAll(/^## ([^\r\n]+?) \{#([\w-]+)\}\r?$/gm), ([, title, anchor]) => ({
+    text: title,
+    link: `${link}#${anchor}`
+  }))
+}
+
+// —— 项目实战：两门课程各一套侧边栏（课程导读入口在侧边栏顶部的课程卡里） ——
+
 const aftersalesIndex = '/posts/aftersales-analytics-from-scratch'
 const aftersalesBase = '/posts/aftersales-analytics/'
-const aftersalesChapters = readCourseChapters(aftersalesBase)
-
 const aftersalesSidebar: DefaultTheme.SidebarItem[] = [
-  {
-    text: '完整目录',
-    items: [{ text: '课程导读', link: aftersalesIndex }, ...aftersalesChapters]
-  },
+  { text: '章节', items: readCourseChapters(aftersalesBase) },
   {
     text: '关键材料',
     items: [
@@ -50,29 +71,35 @@ const softwareDevelopmentIndex = '/posts/software-development-workflow'
 const softwareDevelopmentBase = softwareDevelopmentIndex + '/'
 const softwareDevelopmentChapters = readCourseChapters(softwareDevelopmentBase)
 const softwareDevelopmentSidebar: DefaultTheme.SidebarItem[] = [
-  {
-    text: '完整目录',
-    items: [{ text: '课程导读', link: softwareDevelopmentIndex }]
-  },
   { text: '软件开发六课', items: softwareDevelopmentChapters.slice(0, 6) },
   { text: '综合项目与八轮需求调研', items: softwareDevelopmentChapters.slice(6, 15) },
   { text: '系统架构设计', items: softwareDevelopmentChapters.slice(15) }
 ]
 
-const projectLinks: DefaultTheme.SidebarItem[] = [
+const projectLinks: DefaultTheme.NavItemWithLink[] = [
   { text: '从零开发售后数据分析系统', link: aftersalesIndex },
   { text: '软件开发流程与订单系统实战', link: softwareDevelopmentIndex }
 ]
 
-const notesLinks: DefaultTheme.SidebarItem[] = [
-  { text: '计算机基础篇', link: '/posts/code-notes-computer-fundamentals' },
-  { text: 'Java 篇', link: '/posts/code-notes-java' },
-  { text: '前端篇', link: '/posts/code-notes-frontend' },
-  { text: '算法篇', link: '/posts/code-notes-algorithm' },
-  { text: '面经篇', link: '/posts/code-notes-interview' }
+// —— 八股文笔记：5 篇，当前篇展开大章节 ——
+
+const notesPrefix = '/posts/code-notes-'
+const notesSidebar: DefaultTheme.SidebarItem[] = [
+  {
+    text: '八股文笔记',
+    items: [
+      { text: '计算机基础篇', link: `${notesPrefix}computer-fundamentals` },
+      { text: 'Java 篇', link: `${notesPrefix}java` },
+      { text: '前端篇', link: `${notesPrefix}frontend` },
+      { text: '算法篇', link: `${notesPrefix}algorithm` },
+      { text: '面经篇', link: `${notesPrefix}interview` }
+    ].map((item) => ({ ...item, collapsed: true, items: readSections(item.link) }))
+  }
 ]
 
-const articleGroups: DefaultTheme.SidebarItem[] = [
+// —— 方法与思考：5 篇长文，分两组 ——
+
+const essaysSidebar: DefaultTheme.SidebarItem[] = [
   {
     text: '写作与项目管理',
     items: [
@@ -89,9 +116,9 @@ const articleGroups: DefaultTheme.SidebarItem[] = [
     ]
   }
 ]
+const essayLinks = essaysSidebar.flatMap((group) => group.items!.map((item) => item.link!))
 
-type NavLink = DefaultTheme.NavItemWithLink
-const toNav = (items: DefaultTheme.SidebarItem[]) => items as NavLink[]
+const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 export default defineConfig({
   lang: 'zh-CN',
@@ -115,26 +142,25 @@ export default defineConfig({
     }
   },
   themeConfig: {
+    // 顶部导航只负责专栏切换；专栏内的篇目与章节交给左侧边栏
     nav: [
       { text: '首页', link: '/' },
-      { text: '项目实战', items: toNav(projectLinks) },
-      { text: '八股文笔记', items: toNav(notesLinks) },
       {
-        text: '文章',
-        items: articleGroups.map((group) => ({ text: group.text!, items: toNav(group.items!) }))
+        text: '项目实战',
+        items: projectLinks,
+        activeMatch: `^(${[aftersalesIndex, aftersalesBase, softwareDevelopmentIndex].map(escapeRegExp).join('|')})`
       },
+      { text: '八股文笔记', link: `${notesPrefix}computer-fundamentals`, activeMatch: `^${notesPrefix}` },
+      { text: '方法与思考', link: essayLinks[0], activeMatch: `^(${essayLinks.map(escapeRegExp).join('|')})` },
       { text: '归档', link: '/archive' }
     ],
+    // 左侧边栏按专栏区分，只显示当前专栏；首页、归档、指南不显示
     sidebar: {
       [aftersalesIndex]: aftersalesSidebar,
       [aftersalesBase]: aftersalesSidebar,
       [softwareDevelopmentIndex]: softwareDevelopmentSidebar,
-      [softwareDevelopmentBase]: softwareDevelopmentSidebar,
-      '/': [
-        { text: '项目实战', items: projectLinks },
-        { text: '八股文笔记', items: notesLinks },
-        ...articleGroups
-      ]
+      [notesPrefix]: notesSidebar,
+      ...Object.fromEntries(essayLinks.map((link) => [link, essaysSidebar]))
     },
     footer: {
       message: '<a href="/guide">写作与发布指南</a> · <a href="/archive">文章归档</a>'
