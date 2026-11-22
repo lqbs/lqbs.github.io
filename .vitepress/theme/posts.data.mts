@@ -14,6 +14,10 @@ export interface Post {
   minutes: number
   /** 课程类文章：同名目录下的章节数 */
   chapters?: number
+  /** 源文件相对路径，如 posts/foo.md */
+  source: string
+  /** 课程类文章：章节目录相对路径，如 posts/aftersales-analytics/ */
+  chapterBase?: string
 }
 
 declare const data: Post[]
@@ -30,14 +34,17 @@ export default createContentLoader('posts/*.md', {
         const title = frontmatter.title ?? src.match(/^# (.+)$/m)?.[1] ?? url
         let { words, minutes } = countReading(src)
         let chapters: number | undefined
+        let chapterBase: string | undefined
 
         // 课程首页：统计同名目录（或 frontmatter.chapterDir 指定的同级目录）下所有章节
         const base = url.replace(/^\//, '').replace(/\.html$/, '')
-        const dir = join(srcDir, frontmatter.chapterDir ? join(base, '..', frontmatter.chapterDir) : base)
+        const relativeDir = frontmatter.chapterDir ? join(base, '..', frontmatter.chapterDir) : base
+        const dir = join(srcDir, relativeDir)
         if (existsSync(dir)) {
           const files = readdirSync(dir).filter((file) => /^\d{2}-.+\.md$/.test(file))
           if (files.length) {
             chapters = files.length
+            chapterBase = relativeDir.replace(/\\/g, '/') + '/'
             for (const file of files) {
               const stats = countReading(readFileSync(join(dir, file), 'utf8'))
               words += stats.words
@@ -55,7 +62,9 @@ export default createContentLoader('posts/*.md', {
           category: Array.isArray(frontmatter.categories) ? String(frontmatter.categories[0]) : undefined,
           words,
           minutes,
-          chapters
+          chapters,
+          source: `${base}.md`,
+          chapterBase
         }
       })
       .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '') || a.title.localeCompare(b.title, 'zh-CN'))
