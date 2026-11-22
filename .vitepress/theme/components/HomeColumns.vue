@@ -31,8 +31,6 @@ const columns: Column[] = [
   }
 ].map((column) => ({ ...column, posts: posts.filter(column.match) }))
 
-const recent = posts.slice(0, 6)
-
 function detail(post: Post) {
   const length = `约 ${formatMinutes(post.minutes)}`
   return post.chapters ? `${post.chapters} 章 · ${length}` : length
@@ -58,19 +56,9 @@ function detail(post: Post) {
       </article>
     </section>
 
-    <section class="recent" aria-labelledby="recent-title">
-      <div class="recent__header">
-        <h2 id="recent-title" class="recent__title">最近更新</h2>
-        <a class="recent__more" :href="withBase('/archive')">全部文章 →</a>
-      </div>
-      <ol class="recent__list">
-        <li v-for="post in recent" :key="post.url" class="recent__item">
-          <time class="recent__date" :datetime="post.date">{{ post.date }}</time>
-          <a class="recent__link" :href="withBase(post.url)">{{ post.title }}</a>
-          <span v-if="post.category" class="recent__category">{{ post.category }}</span>
-        </li>
-      </ol>
-    </section>
+    <p class="archive-link">
+      <a :href="withBase('/archive')">全部 {{ posts.length }} 篇文章，按时间与标签查看 →</a>
+    </p>
   </div>
 </template>
 
@@ -150,84 +138,19 @@ function detail(post: Post) {
   color: var(--vp-c-text-3);
 }
 
-.recent {
-  margin-top: 40px;
-}
 
-.recent__header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  border-bottom: 1px solid var(--vp-c-divider);
-  padding-bottom: 8px;
-}
-
-.recent__title {
-  border-top: 0;
-  padding-top: 0;
-  letter-spacing: 0;
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
-}
-
-.recent__more {
+.archive-link {
+  margin: 28px 0 0;
+  text-align: center;
   font-size: 14px;
+}
+
+.archive-link a {
   color: var(--vp-c-brand-1);
   text-decoration: none;
 }
 
-.recent__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.recent__item {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  padding: 10px 0;
-  border-bottom: 1px dashed var(--vp-c-divider);
-}
-
-.recent__date {
-  flex: none;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  color: var(--vp-c-text-3);
-}
-
-.recent__link {
-  flex: 1;
-  min-width: 0;
-  font-size: 15px;
-  line-height: 24px;
-  color: var(--vp-c-text-1);
-  text-decoration: none;
-}
-
-.recent__link:hover {
-  color: var(--vp-c-brand-1);
-}
-
-.recent__category {
-  flex: none;
-  font-size: 12px;
-  color: var(--vp-c-text-3);
-}
-
-@media (max-width: 639px) {
-  .recent__item {
-    flex-wrap: wrap;
-    gap: 2px 12px;
-  }
-
-  .recent__link {
-    flex-basis: 100%;
-    order: 3;
-  }
+.archive-link a:hover {
+  text-decoration: underline;
 }
 </style>
