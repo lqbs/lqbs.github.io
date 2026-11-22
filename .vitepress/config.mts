@@ -143,8 +143,8 @@ export default defineConfig({
   },
   themeConfig: {
     // 顶部导航只负责专栏切换；专栏内的篇目与章节交给左侧边栏
+    // 站名即回首页的入口，导航不再单列“首页”
     nav: [
-      { text: '首页', link: '/' },
       {
         text: '项目实战',
         items: projectLinks,
