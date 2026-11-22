@@ -124,6 +124,7 @@ export default defineConfig({
   lang: 'zh-CN',
   title: '我的文档',
   description: '项目实战课程、面试八股笔记与方法论长文',
+  srcExclude: ['CLAUDE.md'],
   markdown: {
     config(md) {
       md.use(chatTurns)
