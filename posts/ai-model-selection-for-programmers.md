@@ -6,6 +6,8 @@ tags: ["AI", "LLM", "程序员", "选型"]
 categories: ["AI"]
 ---
 
+# 程序员如何选 AI 模型：基于 Intelligence Index v4.1 的选型指南
+
 最近看到一张 Artificial Analysis Intelligence Index v4.1 的图，综合分前排基本是 Claude Fable 5、Claude Opus 4.8、GPT-5.5 xHigh 这一档，紧随其后的是 GLM-5.2 Max、Gemini 3.5 Flash、Claude Sonnet 4.5、Gemini 3.1 Pro Preview、Qwen3.7 Max，再往下是 MiniMax-M3、DeepSeek V4 Pro、Muse Spark、Kimi K2.6、MiMo 等。
 
 但这只是一张「综合智能指数」图，不是代码榜、不是 Agent 榜、也不是性价比榜。拿它直接等同于「写代码最好」是错的。
